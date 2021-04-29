@@ -42,7 +42,37 @@ def orders():
     """Renders the orders page."""
     return render_template(
         'orders.html',
-        title='Orders',
+        title='Place An Order',
         year=datetime.now().year,
         message='Your application description page.'
+    )
+
+@app.route('/login')
+def login():
+    """Renders the login page."""
+    return render_template(
+        'login.html',
+        title='Account Login',
+        year=datetime.now().year,
+        message='Login to your account to proceed'
+    )
+
+@app.route('/catelog')
+def catelog():
+    """Renders the shopping page."""
+    return render_template(
+        'catelog.html',
+        title='Browse Stores and Shopping',
+        year=datetime.now().year,
+        message='Login to your account to proceed'
+    )
+
+@app.route('/create_account')
+def create_account():
+    """Renders the account creation page."""
+    return render_template(
+        'account.html',
+        title="Create your Dick's Sporting Goods Account",
+        year=datetime.now().year,
+        message='Login to your account to proceed'
     )

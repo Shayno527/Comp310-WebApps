@@ -44,6 +44,9 @@
   <ItemGroup>
     <Content Include="DicksSportingGoodsWebApp\img\Logo.png" />
     <Content Include="DicksSportingGoodsWebApp\templates\orders.html" />
+    <Content Include="DicksSportingGoodsWebApp\templates\login.html" />
+    <Content Include="DicksSportingGoodsWebApp\templates\catelog.html" />
+    <Content Include="DicksSportingGoodsWebApp\templates\account.html" />
     <Content Include="requirements.txt" />
     <Content Include="DicksSportingGoodsWebApp\static\content\bootstrap.css" />
     <Content Include="DicksSportingGoodsWebApp\static\content\bootstrap.min.css" />
