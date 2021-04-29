@@ -21,9 +21,9 @@ def contact():
     """Renders the contact page."""
     return render_template(
         'contact.html',
-        title='Contact',
+        title='Contact Us',
         year=datetime.now().year,
-        message='Your contact page.'
+        message="Dick's Sporting Goods Cooperate Headquarters"
     )
 
 @app.route('/about')
@@ -31,9 +31,10 @@ def about():
     """Renders the about page."""
     return render_template(
         'about.html',
-        title='About',
+        title="About Dick's Sporting Goods",
         year=datetime.now().year,
-        message='Your application description page.'
+        message='Enterprise Description',
+        mission='Our Mission'
     )
 
 @app.route('/orders')
