@@ -10,12 +10,13 @@ from datetime import datetime
 from random import randrange
 import pymysql as mysql
 import re
+import numpy as mp
 
 connection = mysql.connect(host='localhost',
                            user='root',
                            password='Mitchell2',
                            db='dicksschema')
-cur = connection.cursor()
+
 
 app = Flask(__name__)
   
@@ -39,21 +40,33 @@ def about():
 
 @app.route('/orders', methods =['GET', 'POST'])
 def orders():
+    if request.method == 'POST':
+        onum = request.form.get('order_num')
+        odate = request.form.get('order_date')
+        
+        connection
+        cur
+        sql = "SELECT * FROM orders WHERE order_num = %s AND order_date = %s"
+        loc = (str(onum), str(odate))
+        cur.execute(sql, loc)
+        return render_template('orders.html', title='View your exsisting orders', year=datetime.now().year,
+                               message='Order Number: '+str(onum))
     """Renders the orders page."""
     return render_template('orders.html', title='View your existing orders', year=datetime.now().year,
                            message='Your orders')
 
 @app.route('/login', methods =['GET', 'POST'])
 def login():
-    if request.method=='POST':
-        username = request.form['username']
-        password = request.form['password']
+    cur = connection.cursor()
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
         
         connection
         cur
         sql = "SELECT * FROM customers WHERE (username = %s AND passwrd = %s)"
         loc = (str(username), str(password))
-        cur.execute(sql, str(username), str(password))
+        cur.execute(sql, loc)
         account = cur.fetchone()[0]
         if account:
             return render_template('orders.html', title='View your exsisting orders', year=datetime.now().year, 
@@ -64,16 +77,28 @@ def login():
         
     """Renders the login page."""
     return render_template('login.html', title='Account Login',
-        year=datetime.now().year, message='Login to your account to proceed')
+                           year=datetime.now().year, message='Login to your account to proceed')
 
 @app.route('/catelog', methods =['GET', 'POST'])
 def catelog():
+    if request.method == 'POST':
+        iname = request.form.get('item_name')
+        color = list(np.random.choice(range(256), size = 3))
+        
+        connection
+        cur
+        sql = "SELECT * FROM products WHERE item_name = %s"
+        loc = (str(iname))
+        cur.execute(sql, loc)
+        product = cur.fetchone()
+        return render_template('orders.html', product=product)
     """Renders the shopping page."""
     return render_template('catelog.html', title='Browse Stores and Shopping', year=datetime.now().year,
                            message='Browse our stores')
 
 @app.route('/create_account', methods =['POST', 'GET'])
 def create_account():
+    cur = connection.cursor()
     if request.method == 'POST':
         customer_id = randrange(1000000)
         customer_name = request.form.get('custname')
@@ -96,6 +121,7 @@ def create_account():
         loc = (str(customer_id), str(customer_name), str(username), str(password), str(email), str(street_number), str(street_name), str(apt_num), str(city), str(state), str(postalcode), str(points), str(phone))
         cur.execute(sql, loc)
         connection.commit()
+        cur.close()
         return render_template('account.html', title="Create your Dick's Sporting Goods Account", 
                                year=datetime.now().year, message='You have successfully registered!')
     
