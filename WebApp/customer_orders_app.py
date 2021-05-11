@@ -5,12 +5,11 @@ Created on Mon Apr 26 11:02:57 2021
 @author: Mitch Perez and Shayne Sendera
 """
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request
 from datetime import datetime
 from random import randrange
 import pymysql as mysql
-import re
-import numpy as mp
+import numpy as np
 
 connection = mysql.connect(host='localhost',
                            user='root',
@@ -40,6 +39,7 @@ def about():
 
 @app.route('/orders', methods =['GET', 'POST'])
 def orders():
+    cur = connection.cursor()
     if request.method == 'POST':
         onum = request.form.get('order_num')
         odate = request.form.get('order_date')
@@ -49,31 +49,31 @@ def orders():
         sql = "SELECT * FROM orders WHERE order_num = %s AND order_date = %s"
         loc = (str(onum), str(odate))
         cur.execute(sql, loc)
+        connection.commit()
+        cur.close()
         return render_template('orders.html', title='View your exsisting orders', year=datetime.now().year,
                                message='Order Number: '+str(onum))
     """Renders the orders page."""
     return render_template('orders.html', title='View your existing orders', year=datetime.now().year,
                            message='Your orders')
 
-@app.route('/login', methods =['GET', 'POST'])
+@app.route('/login', methods =['POST', 'GET'])
 def login():
     cur = connection.cursor()
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+    username = request.form.get('username')
+    password = request.form.get('password')
         
-        connection
-        cur
-        sql = "SELECT * FROM customers WHERE (username = %s AND passwrd = %s)"
-        loc = (str(username), str(password))
-        cur.execute(sql, loc)
-        account = cur.fetchone()[0]
-        if account:
-            return render_template('orders.html', title='View your exsisting orders', year=datetime.now().year, 
-                                   message='Logged in! Your orders')
-        else:
-            return render_template('login.html', title='Account Login', year=datetime.now().year, 
-                                   message='Incorrect username/password!')
+    connection
+    cur
+    sql = "SELECT * FROM customers WHERE username=%s AND passwrd=%s ORDER BY username"
+    loc = (str(username), str(password))
+    cur.execute(sql, loc)
+    user = cur.fetchone()
+    while user is not None:
+       cur.close()
+       return render_template('orders.html', title='View your exsisting orders', year=datetime.now().year, 
+                                  message='Logged in! Your orders')
+      
         
     """Renders the login page."""
     return render_template('login.html', title='Account Login',
@@ -81,16 +81,19 @@ def login():
 
 @app.route('/catelog', methods =['GET', 'POST'])
 def catelog():
+    cur = connection.cursor()
     if request.method == 'POST':
         iname = request.form.get('item_name')
         color = list(np.random.choice(range(256), size = 3))
         
         connection
         cur
-        sql = "SELECT * FROM products WHERE item_name = %s"
-        loc = (str(iname))
+        sql = "SELECT * FROM products WHERE item_name = %s AND color =%s"
+        loc = (str(iname), color)
         cur.execute(sql, loc)
+        connection.commit()
         product = cur.fetchone()
+        cur.close()
         return render_template('orders.html', product=product)
     """Renders the shopping page."""
     return render_template('catelog.html', title='Browse Stores and Shopping', year=datetime.now().year,

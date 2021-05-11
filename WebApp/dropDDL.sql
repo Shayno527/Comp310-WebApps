@@ -1,0 +1,11 @@
+drop table Sales;
+drop table Orders;
+drop table Customers;
+drop table Reorder;
+drop table Inventory;
+drop table Supplier;
+drop table Products;
+drop table Employee;
+drop table Department;
+drop table Store;
+drop table dicksschema;
